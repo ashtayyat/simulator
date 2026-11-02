@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { apiPost, setApiToken } from '../api/http';
+import { apiPost, setApiToken, DEMO_MODE, enterDemo } from '../api/http';
 import { useAuth } from '../context/AuthContext';
 
 export default function LoginPage() {
@@ -26,12 +26,20 @@ export default function LoginPage() {
   return (
     <section>
       <h1>Login</h1>
-      <form className="panel" onSubmit={submit}>
+      {DEMO_MODE && <div className="panel">
+        <h2>Try a demo role</h2>
+        <p>No account needed. Switch roles using Logout. Use sample information only.</p>
+        {['admin', 'teacher', 'student'].map((role) => <button key={role} className="btn" onClick={() => {
+          const data = enterDemo(role);
+          setApiToken(data.token); setUser(data.user); navigate(`/${data.user.role}`);
+        }}>Try as {role}</button>)}
+      </div>}
+      {!DEMO_MODE && <form className="panel" onSubmit={submit}>
         <input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         <input placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         <button className="btn" type="submit">Login</button>
         {error && <p className="error">{error}</p>}
-      </form>
+      </form>}
     </section>
   );
 }

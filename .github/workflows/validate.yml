@@ -18,6 +18,8 @@ jobs:
       - run: npm ci --prefix client
       - run: npm run check --prefix server
       - run: npm test --prefix server
+      - run: node --test client/test/demo.test.mjs
       - run: npm run build
         env:
+          VITE_DEMO_MODE: 'true'
           VITE_BASE_PATH: /simulator/

@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
-import { apiGet, apiPost } from '../api/http';
+import { apiGet, apiPost as post } from '../api/http';
 
 export default function AdminPage() {
+  const [feedback, setFeedback] = useState('');
+  const apiPost = async (...args) => {
+    try { const result = await post(...args); setFeedback('Saved successfully.'); return result; }
+    catch (error) { setFeedback(error.message); return null; }
+  };
   const [users, setUsers] = useState([]);
   const [courses, setCourses] = useState([]);
   const [results, setResults] = useState([]);
@@ -26,6 +31,7 @@ export default function AdminPage() {
 
   return (
     <section>
+      {feedback && <p role="status">{feedback}</p>}
       <h1>Admin Portal</h1>
       <p>Manage users, courses, templates, exams, enrollments, and results by course.</p>
 
@@ -71,3 +77,4 @@ export default function AdminPage() {
     </section>
   );
 }
+

@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react';
-import { apiGet, apiPost } from '../api/http';
+import { apiGet, apiPost as post } from '../api/http';
 import { useAuth } from '../context/AuthContext';
 import SlideTemplatePreview from '../components/SlideTemplatePreview';
 
 export default function TeacherPage() {
+  const [feedback, setFeedback] = useState('');
+  const apiPost = async (...args) => {
+    try { const result = await post(...args); setFeedback('Saved successfully.'); return result; }
+    catch (error) { setFeedback(error.message); return null; }
+  };
   const { user } = useAuth();
   const [courses, setCourses] = useState([]);
   const [students, setStudents] = useState([]);
@@ -40,6 +45,7 @@ export default function TeacherPage() {
 
   return (
     <section>
+      {feedback && <p role="status">{feedback}</p>}
       <h1>Teacher Portal</h1>
       <p>Enroll students, create exams, and publish templates for your courses.</p>
 
@@ -117,3 +123,4 @@ export default function TeacherPage() {
     </section>
   );
 }
+

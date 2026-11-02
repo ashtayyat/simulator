@@ -1,0 +1,22 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { createDemoApi } from '../src/api/demo.js';
+test('demo persists course, enrollment, exam and result across role switches', async () => {
+ const map = new Map();
+ const storage = { getItem: (k) => map.get(k), setItem: (k,v) => map.set(k,v) };
+ const api = createDemoApi(storage);
+ api.enter('admin');
+ const course = await api.request('/courses', {title:'New course',description:'Demo',createdBy:2});
+ api.enter('teacher');
+ await api.request('/enrollments', {courseId:course.id,studentId:3});
+ await assert.rejects(api.request('/exams',{courseId:course.id,title:'Bad',questions:[]}));
+ const exam = await api.request('/exams', {courseId:course.id,title:'Test',questions:[{question:'Function?',hint:'Add',answer:'SUM'}]});
+ api.clear();api.enter('student');
+ assert.equal((await api.request(`/exams/${exam.id}`)).questions[0].answer,undefined);
+ assert.equal((await api.request(`/exams/${exam.id}/submit`,{answers:['sum']})).score,100);
+ await assert.rejects(api.request(`/exams/${exam.id}/submit`,{answers:['sum']}));
+ const reloaded = createDemoApi(storage); reloaded.enter('admin');
+ assert.equal((await reloaded.request(`/results/course/${course.id}`))[0].score,100);
+ reloaded.reset();reloaded.enter('admin');
+ assert.equal((await reloaded.request('/courses')).length,1);
+});

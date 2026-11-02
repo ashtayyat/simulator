@@ -170,3 +170,15 @@ plaintext demo passwords are upgraded on successful login. Demo credentials abov
 are for local development; replace them before exposing a deployment.
 
 `PORT` overrides the backend port and `DB_PATH` overrides the SQLite file path.
+
+## Free GitHub Pages demo
+
+Pages builds set `VITE_DEMO_MODE=true`: no backend URL or hosting account is needed.
+Open the site, select Login, and choose Try as admin, teacher, or student.
+An enrolled sample student, course, templates and quiz are included.
+Switch roles with Logout to view results as admin. Reset demo data starts over.
+Data stays in localStorage in the same browser/profile and is not shared.
+Demo records and answer keys can be inspected in the browser; use fictional data only.
+The server-backed application remains available when VITE_DEMO_MODE is unset.
+
+Run the browser-data workflow test with `node --test client/test/demo.test.mjs`.
