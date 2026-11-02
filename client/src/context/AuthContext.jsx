@@ -1,11 +1,13 @@
 import { createContext, useContext, useMemo, useState } from 'react';
 
+import { setApiToken } from '../api/http';
+
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
-  const value = useMemo(() => ({ user, setUser, logout: () => setUser(null) }), [user]);
+  const value = useMemo(() => ({ user, setUser, logout: () => { setApiToken(null); setUser(null); } }), [user]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
@@ -13,3 +15,4 @@ export function AuthProvider({ children }) {
 export function useAuth() {
   return useContext(AuthContext);
 }
+

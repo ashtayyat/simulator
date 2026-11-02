@@ -29,7 +29,7 @@ So for a working online demo, you need:
 
 ## Prerequisites
 
-- Node.js **18+** (recommended: Node.js 20 LTS)
+- Node.js **22 LTS** (also used by CI)
 - npm **9+**
 
 Check versions:
@@ -46,8 +46,9 @@ From project root:
 1) Install root + workspace dependencies
 
 ```bash
-npm install
-npm run install:all
+npm ci
+npm ci --prefix server
+npm ci --prefix client
 ```
 
 2) Initialize and seed database
@@ -142,3 +143,30 @@ npm run install:all
 ```
 
 If your organization requires an internal registry, use that registry URL.
+
+
+## Validation and sessions
+
+The canonical application lives in `client/` and `server/`. The earlier
+`frontend/` and `backend/` scaffold is superseded by this layout.
+
+After installing dependencies, run:
+
+```bash
+npm run check --prefix server
+npm test --prefix server
+npm run build
+```
+
+The API integration test creates and removes its own temporary SQLite database.
+It checks login, role and course restrictions, enrollment, template visibility,
+exam validation, answer-key filtering, grading, and duplicate submission rejection.
+The frontend build validates JSX through Vite. PR validation does not deploy Pages.
+
+Login returns a random bearer session token valid for 12 hours. Sessions live in
+server memory, so restarting the backend or refreshing the page requires login.
+Passwords for new users and seeded accounts use salted scrypt hashes. Existing
+plaintext demo passwords are upgraded on successful login. Demo credentials above
+are for local development; replace them before exposing a deployment.
+
+`PORT` overrides the backend port and `DB_PATH` overrides the SQLite file path.

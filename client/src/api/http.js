@@ -1,5 +1,9 @@
 const API = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
+let sessionToken;
+export function setApiToken(token) { sessionToken = token; }
+const authHeaders = () => sessionToken ? { Authorization: `Bearer ${sessionToken}` } : {};
+
 function withApiHint(error, path) {
   return new Error(
     `${error.message} (request: ${path}). If you opened this app from GitHub Pages, set VITE_API_URL to a deployed backend URL.`
@@ -8,7 +12,7 @@ function withApiHint(error, path) {
 
 export async function apiGet(path) {
   try {
-    const res = await fetch(`${API}${path}`);
+    const res = await fetch(`${API}${path}`, { headers: authHeaders() });
     if (!res.ok) throw new Error(`GET ${path} failed with ${res.status}`);
     return res.json();
   } catch (error) {
@@ -20,7 +24,7 @@ export async function apiPost(path, body) {
   try {
     const res = await fetch(`${API}${path}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
       body: JSON.stringify(body)
     });
     if (!res.ok) {
@@ -32,3 +36,4 @@ export async function apiPost(path, body) {
     throw withApiHint(error, path);
   }
 }
+

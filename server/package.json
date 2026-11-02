@@ -6,7 +6,9 @@
     "dev": "node --watch index.js",
     "start": "node index.js",
     "db:init": "node db/init.js",
-    "db:seed": "node db/seed.js"
+    "db:seed": "node db/seed.js",
+    "test": "node --test",
+    "check": "node --check index.js && node --check passwords.js && node --check db/connection.js && node --check db/init.js && node --check db/seed.js"
   },
   "dependencies": {
     "better-sqlite3": "^11.8.1",

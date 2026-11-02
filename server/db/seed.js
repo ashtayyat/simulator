@@ -1,12 +1,13 @@
+import { hashPassword } from '../passwords.js';
 import { db } from './connection.js';
 
 const insertUser = db.prepare(
   'INSERT OR IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, ?)'
 );
 
-insertUser.run('System Admin', 'admin@office.local', 'admin123', 'admin');
-insertUser.run('Demo Teacher', 'teacher@office.local', 'teacher123', 'teacher');
-insertUser.run('Demo Student', 'student@office.local', 'student123', 'student');
+insertUser.run('System Admin', 'admin@office.local', hashPassword('admin123'), 'admin');
+insertUser.run('Demo Teacher', 'teacher@office.local', hashPassword('teacher123'), 'teacher');
+insertUser.run('Demo Student', 'student@office.local', hashPassword('student123'), 'student');
 
 const admin = db.prepare("SELECT id FROM users WHERE role = 'admin' LIMIT 1").get();
 const teacher = db.prepare("SELECT id FROM users WHERE role = 'teacher' LIMIT 1").get();
@@ -35,3 +36,4 @@ if (teacher) {
 }
 
 console.log('Seed data inserted successfully.');
+

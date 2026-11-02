@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { apiPost } from '../api/http';
+import { apiPost, setApiToken } from '../api/http';
 import { useAuth } from '../context/AuthContext';
 
 export default function LoginPage() {
@@ -15,6 +15,7 @@ export default function LoginPage() {
     setError('');
     try {
       const data = await apiPost('/auth/login', { email, password });
+      setApiToken(data.token);
       setUser(data.user);
       navigate(`/${data.user.role}`);
     } catch (err) {
@@ -34,3 +35,4 @@ export default function LoginPage() {
     </section>
   );
 }
+
