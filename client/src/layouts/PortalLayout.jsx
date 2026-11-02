@@ -8,10 +8,12 @@ export default function PortalLayout() {
     <div className="layout">
       <header className="header">
         <h2>Office Simulator</h2>
-        <div>
-          <span>{user?.name} ({user?.role})</span>
-          <button onClick={logout} className="btn">Logout</button>
-        </div>
+        {user ? (
+          <div>
+            <span>{user.name} ({user.role})</span>
+            <button onClick={logout} className="btn">Logout</button>
+          </div>
+        ) : <Link to="/login">Login</Link>}
       </header>
       <nav className="nav">
         <Link to="/">Home</Link>
@@ -25,3 +27,4 @@ export default function PortalLayout() {
     </div>
   );
 }
+
